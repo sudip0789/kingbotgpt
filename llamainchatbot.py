@@ -187,10 +187,6 @@ if __name__ == "__main__":
         queryBot(cbconfig['button2']['content'],bot,cbconfig['button2']['chip'])
     if button3:
         queryBot(cbconfig['button3']['content'],bot,cbconfig['button3']['chip'])
-            
-    # chat
-    if user_query := st.chat_input(placeholder="Ask me about the SJSU Library!"):
-        queryBot(user_query,bot)
 
     # Initialize input counter for clearing
     if 'input_counter' not in st.session_state:
