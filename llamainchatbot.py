@@ -46,6 +46,18 @@ p img{
 #chat-with-sjsu-library-s-kingbot  a {
     display:none;
 }
+
+.stForm {
+    border: 0px;
+}
+
+button[data-testid="stBaseButton-primaryFormSubmit"] {
+    background-color: #0055A2 !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: bold !important;
+}  
 </style>
 """
 
@@ -179,7 +191,39 @@ if __name__ == "__main__":
     # chat
     if user_query := st.chat_input(placeholder="Ask me about the SJSU Library!"):
         queryBot(user_query,bot)
+
+    # Initialize input counter for clearing
+    if 'input_counter' not in st.session_state:
+        st.session_state.input_counter = 0
+    
+    with st.form(key=f"chat_form_{st.session_state.input_counter}", clear_on_submit=True):
+        input_col, button_col = st.columns([4, 1])
         
+        with input_col:
+            user_input = st.text_input(
+                label="Message",
+                placeholder="Ask me about the SJSU Library!",
+                label_visibility="collapsed"
+            )
+        
+        with button_col:
+            send_clicked = st.form_submit_button(
+                "Send ➤",
+                type="primary",
+                use_container_width=True,
+                help="Send message"
+            )
+    
+    # Handle message sending - form submission handles both Enter and button click
+    if send_clicked and user_input and user_input.strip():
+
+        queryBot(user_input.strip(), bot)
+        
+        # Increment counter to create new form (for clearing)
+        st.session_state.input_counter += 1
+        
+        st.rerun()  
+
     # feedback, works outside user_query section     
     feedback_kwargs = {
         "feedback_type": "thumbs",
